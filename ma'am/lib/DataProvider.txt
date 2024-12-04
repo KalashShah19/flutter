@@ -1,0 +1,51 @@
+import 'package:flutter/material.dart';
+import 'package:jsonapi_http/services/StudentServices.dart';
+
+class Dataprovider with ChangeNotifier
+{
+  final Studentservices studentservices;
+  List<dynamic> _items = [];
+  bool _isLoading = false;
+
+  Dataprovider(this.studentservices);
+
+  bool get isLoading => _isLoading;
+
+  List<dynamic> get items => _items;
+
+  Future<void> GetData() async{
+    _isLoading = true;
+    notifyListeners();
+    try
+    {
+      _items = await studentservices.getData('list.php');
+      print("Items: $_items");
+    }
+    catch(e)
+    {
+      print("Error fetching data: $e");
+    }
+    finally{
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> AddStud(Map<String,dynamic> data) async{
+    _isLoading = true;
+    notifyListeners();
+    try
+    {
+        await studentservices.AddStudent("studinsert.php", data);
+        await GetData();
+    }
+    catch(e)
+    {
+      print(e);
+    }
+    finally{
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+}

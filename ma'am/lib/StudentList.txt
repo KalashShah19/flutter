@@ -1,0 +1,147 @@
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+
+import 'Student.dart';
+
+class Studentlist extends StatefulWidget {
+  const Studentlist({super.key});
+
+  @override
+  State<Studentlist> createState() => _StudentlistState();
+}
+
+class _StudentlistState extends State<Studentlist> {
+
+  late Future<List<Student>> futureStud;
+
+
+  Future<List<Student>> GetStudent() async{
+    final response = await get(Uri.parse("http://192.168.56.1:8080/stud/list.php"));
+    if(response.statusCode == 200)
+      {
+        final List result = jsonDecode(response.body.toString());
+        List<Student> student = [];
+        for(var index in result)
+          {
+            student.add(Student.fromJSON(index));
+          }
+        return student;
+      }
+    else{
+      throw Exception('Failed to Load');
+    }
+  }
+
+  Future<void> AddStudent(String Name, String ContactNo) async{
+    final body = jsonEncode({"name":Name,"ContactNo":ContactNo});
+    final response = await post(Uri.parse("http://192.168.56.1:8080/stud/studinsert.php"),
+    headers: {"Content-Type":"application/json"},
+    body: body);
+    print(response.statusCode);
+    if(response.statusCode == 201)
+      {
+        setState(() {
+          futureStud = GetStudent();
+        });
+
+      }
+    else
+      {
+        throw Exception('Error in insertion');
+      }
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    futureStud = GetStudent();
+  }
+  TextEditingController txtName = new TextEditingController();
+  TextEditingController txtContactNo = new TextEditingController();
+  void showForm(int? Id) async{
+    showModalBottomSheet(context: context,
+      elevation: 5,
+      isScrollControlled: true,
+      builder: (context) {
+        return Padding(
+            padding: EdgeInsets.only(
+              left: 20,
+              right: 20,
+              top: 20,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 50
+            ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextField(
+              controller: txtName,
+              decoration: InputDecoration(
+                hintText: 'Enter Name'
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            TextField(
+              controller: txtContactNo,
+              decoration: InputDecoration(
+                  hintText: 'Enter Contact No'
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            ElevatedButton(onPressed: (){
+              if(Id == null)
+                AddStudent(txtName.text, txtContactNo.text);
+
+              txtName.clear();
+              txtContactNo.clear();
+              Navigator.of(context).pop();
+            }, child: Text(Id==null?'Create New':'Update'))
+          ],
+        ),);
+    },);
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Student Management System'),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          showForm(null);
+        },
+        child: Icon(Icons.add),
+      ),
+      body: FutureBuilder(
+        future: futureStud,
+        builder: (BuildContext context,
+            AsyncSnapshot<List<Student>> snapshot) {
+          if(snapshot.hasError)
+            {
+              return Center(child: Text('Error : ${snapshot.error}'),);
+            }else if(snapshot.hasData)
+              {
+                return ListView.builder(itemBuilder: (context, index) {
+                  final Student student = snapshot.data![index];
+                  return ListTile(
+                    leading: Text('${student.Id}'),
+                    title: Text('${student.Name}'),
+                    subtitle: Text('${student.ContactNo}'),
+                  );
+                },itemCount: snapshot.data!.length,);
+              }
+          else
+            {
+              return Center(child: CircularProgressIndicator(),);
+            }
+        },
+      ),
+    );
+  }
+}

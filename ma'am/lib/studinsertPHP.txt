@@ -1,0 +1,21 @@
+<?php
+    $conn = new mysqli("localhost","root","","sms");
+
+    // Get the raw POST data
+    $data = json_decode(file_get_contents("php://input"), true);
+
+    $name = $data['name'];
+    $contactNo = $data['ContactNo'];
+
+    $sql = "INSERT INTO tblstudent (name, ContactNo) VALUES ('$name', '$contactNo')";
+
+    if ($conn->query($sql) === TRUE) {
+        http_response_code(201);
+        echo json_encode(["message" => "Student created successfully"]);
+    } else {
+        http_response_code(500);
+        echo json_encode(["error" => "Error: ".$sql. "<br>" . $conn->error]);
+    }
+
+    $conn->close();
+?>

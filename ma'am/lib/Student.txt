@@ -1,0 +1,14 @@
+
+class Student{
+  final int Id;
+  final String Name;
+  final String ContactNo;
+  
+  Student({required this.Id, required this.Name, required this.ContactNo});
+  
+  factory Student.fromJSON(Map<String,dynamic> json)
+  {
+    return Student(Id: int.parse(json['Id']), Name: json['name'],
+        ContactNo: json['ContactNo']);
+  }
+}

@@ -1,0 +1,43 @@
+
+import 'dart:convert';
+
+import 'package:http/http.dart';
+
+class Studentservices{
+  final String baseURL;
+
+  Studentservices({required this.baseURL});
+
+  Future<List<dynamic>> getData(String endPoint) async{
+    final response = await get(Uri.parse('$baseURL/$endPoint'));
+    if(response.statusCode == 200)
+      {
+        print("Data fetched successfully");
+        return json.decode(response.body);
+      }
+    else
+      {
+        print("Failed to load Data: ${response.statusCode}");
+        throw Exception('Failed to load Data');
+      }
+  }
+
+  Future<dynamic> AddStudent(String endPoint, Map<String,dynamic> data) async
+  {
+    final response = await post(Uri.parse('$baseURL/$endPoint'),
+    headers: {"Content-Type":"application/json"},
+    body: json.encode(data));
+    print("POST request to: $baseURL/$endPoint with data: $data");
+    if(response.statusCode == 201)
+      {
+        print("Student added successfully: ${response.body}");
+        return json.decode(response.body);
+      }
+    else
+      {
+        print("Failed to Add Student: ${response.statusCode}");
+        print("Response body: ${response.body}");
+        throw Exception('Failed to Add Student');
+      }
+  }
+}

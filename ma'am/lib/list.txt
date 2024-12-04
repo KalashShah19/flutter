@@ -1,0 +1,148 @@
+import 'package:flutter/material.dart';
+
+class list extends StatefulWidget {
+  const list({super.key});
+
+  @override
+  State<list> createState() => _listState();
+}
+
+class _listState extends State<list> {
+  var selectedValue=null;
+  var isReadingChecked = false;
+  var isTravellingChecked = false;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    selectedValue = 'Female';
+  }
+  @override
+  Widget build(BuildContext context) {
+    var arrcontact = ['364327463287','64327466723','3654364','3643874683','346237484','3426237462'];
+    var arrNames = ['sdfasd','dsfsdf','sdsfsdf','rtrtw','trtret','wtffds'];
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('ListView Demo'),
+      ),
+      body:
+          Column(
+            children: [
+              RadioListTile(
+                  title: Text('Male'),
+                  subtitle: Text('This is radio button 1'),
+                  value: 'Male',
+                  groupValue: selectedValue,
+                  onChanged: (value){
+                    setState(() {
+                      selectedValue = value;
+                    });
+                  }),
+              RadioListTile(
+                  title: Text('Female'),
+                  subtitle: Text('This is Radio Button 2'),
+                  value: 'Female',
+                  groupValue: selectedValue,
+                  onChanged: (value){
+                    setState(() {
+                      selectedValue = value;
+                    });
+                  }),
+              CheckboxListTile(
+                  title: Text('Reading'),
+                  value: isReadingChecked,
+                  onChanged: (value){
+                    setState(() {
+                      isReadingChecked = value!;
+                    });
+
+                  }),
+              CheckboxListTile(
+                  title: Text('Travelling'),
+                  value: isTravellingChecked,
+                  onChanged: (value){
+                    setState(() {
+                      isTravellingChecked = value!;
+                    });
+                  }),
+              ElevatedButton(onPressed: (){
+                if(selectedValue != null)
+                  {
+                    print(selectedValue);
+                  }
+                if(isReadingChecked)
+                  {
+                    print('Reading is checked');
+                  }
+
+                if(isTravellingChecked)
+                  {
+                    print('Travelling is checked');
+                  }
+              }, child: Text('Get Value'))
+            ],
+          )
+
+
+        /*  ListView.separated(itemBuilder: (context, index) {
+           *//* return Text('${arrcontact[index]}',
+              style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),);*//*
+           return ListTile(
+             leading: Text('${index+1}'),
+             title: Text('${arrNames[index]}'),
+             subtitle: Text('${arrcontact[index]}'),
+             trailing: Icon(Icons.add_box),
+           );
+          }, separatorBuilder: (context, index) {
+            return Divider(height: 20,thickness: 2,color: Colors.green,);
+          }, itemCount: arrcontact.length)*/
+        /*ListView.builder(itemBuilder: (context, index) {
+          return Text('${arrcontact[index]}',style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),);
+        },
+        scrollDirection: Axis.vertical,
+          itemCount: arrcontact.length,
+          reverse: true,
+          itemExtent: 50,
+        )*/
+     /* ListView(
+        scrollDirection: Axis.vertical,
+        reverse: true,
+        children: [
+           Padding(
+             padding: const EdgeInsets.all(8.0),
+             child: Text('One',style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),),
+           ),
+          Text('Two',style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),),
+          Text('Three',style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),),
+          Text('Four',style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),),
+          Text('Five',style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),),
+          Text('One',style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),),
+          Text('Two',style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),),
+          Text('Three',style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),),
+          Text('Four',style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),),
+          Text('Five',style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),),
+          Text('One',style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),),
+          Text('Two',style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),),
+          Text('Three',style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),),
+          Text('Four',style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),),
+          Text('Five',style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),),
+          Text('One',style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),),
+          Text('Two',style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),),
+          Text('Three',style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),),
+          Text('Four',style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),),
+          Text('Five',style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),),
+          Text('One',style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),),
+          Text('Two',style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),),
+          Text('Three',style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),),
+          Text('Four',style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),),
+          Text('Five',style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),),
+          Text('One',style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),),
+          Text('Two',style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),),
+          Text('Three',style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),),
+          Text('Four',style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),),
+          Text('Five',style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),),
+        ],
+      ),*/
+    );
+  }
+}

@@ -1,0 +1,106 @@
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:jsonapi_http/StudentList.dart';
+import 'package:jsonapi_http/StudentListwithProvider.dart';
+import 'package:jsonapi_http/provider/DataProvider.dart';
+import 'package:jsonapi_http/services/StudentServices.dart';
+import 'package:provider/provider.dart';
+
+
+import 'Post.dart';
+
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(providers: [ChangeNotifierProvider(create: (_)=>
+        Dataprovider(Studentservices(baseURL: 'http://192.168.56.1:8080/stud/'))),],
+    child: MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+      home: Studentlistwithprovider(),
+      debugShowCheckedModeBanner: false,
+    )
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+
+  List<Post> futurePost = [];
+
+
+  Future<List<Post>> getPost() async{
+    final response = await get(Uri.parse("https://jsonplaceholder.typicode.com/posts"));
+    final List result = jsonDecode(response.body.toString());
+
+    if(response.statusCode == 200)
+      {
+        for(Map<String, dynamic> index in result)
+          {
+            futurePost.add(Post.fromJSON(index));
+          }
+        return futurePost;
+      }
+    else
+      {
+        throw Exception('Failed to Laod');
+      }
+  }
+
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('HTTP API Demo'),
+      ),
+
+      body: FutureBuilder(
+        future: getPost(),
+        builder: (BuildContext context, AsyncSnapshot<List<Post>> snapshot) {
+          if(snapshot.hasData)
+            {
+              return ListView.builder(itemBuilder: (context, index) {
+                return Container(
+                  height: 350,
+                  color: Colors.lightBlueAccent,
+                  child: ListTile(
+                    title: Text('Title : ${futurePost[index].title}'),
+                    subtitle: Text('Body : ${futurePost[index].body}'),
+                    leading: Text('User ID: ${futurePost[index].userId}'),
+                    trailing: Text('ID : ${futurePost[index].Id}'),
+                  ),
+                );
+              },);
+            }else
+              {
+                return Center(child: CircularProgressIndicator(),);
+              }
+      },
+      ),
+    );
+  }
+}
+

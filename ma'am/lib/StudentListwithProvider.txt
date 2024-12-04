@@ -1,0 +1,103 @@
+import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:jsonapi_http/provider/DataProvider.dart';
+import 'package:provider/provider.dart';
+
+class Studentlistwithprovider extends StatefulWidget {
+  const Studentlistwithprovider({super.key});
+
+  @override
+  State<Studentlistwithprovider> createState() => _StudentlistwithproviderState();
+}
+
+class _StudentlistwithproviderState extends State<Studentlistwithprovider> {
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      Provider.of<Dataprovider>(context, listen: false).GetData();
+    });
+  }
+
+  TextEditingController txtName = new TextEditingController();
+  TextEditingController txtContactNo = new TextEditingController();
+  late var dataProvider = null;
+  void showForm(int? Id) async{
+    showModalBottomSheet(context: context,
+        elevation: 5,
+        isScrollControlled: true,
+        builder: (context) {
+          return Padding(
+            padding: EdgeInsets.only(
+              left: 20,
+              right: 20,
+              top: 20,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 50
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextField(
+                  controller: txtName,
+                  decoration: InputDecoration(
+                      hintText: 'Enter Name',
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5)
+                      )
+                  ),
+                  keyboardType: TextInputType.text,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                TextField(
+                  controller: txtContactNo,
+                  decoration: InputDecoration(
+                      hintText: 'Enter Contact No',
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5)
+                      )
+                  ),
+                  keyboardType: TextInputType.phone,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                ElevatedButton(onPressed: (){
+                  dataProvider.AddStud({"name":txtName.text,"ContactNo":txtContactNo.text}
+                  );
+                  txtName.clear();
+                  txtContactNo.clear();
+                  Navigator.of(context).pop();
+                },
+                    child: Text('Create New'))
+              ],
+            ),
+          );
+
+        },);
+  }
+
+ @override
+  Widget build(BuildContext context) {
+   dataProvider = Provider.of<Dataprovider>(context);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Provider Demo'),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          showForm(null);
+        },
+        child: Icon(Icons.add),
+      ),
+      body: dataProvider.isLoading ? Center(child: CircularProgressIndicator(),) :
+          ListView.builder(itemBuilder: (context, index) {
+            return ListTile(
+              title: Text(dataProvider.items[index]['name']),
+              subtitle: Text(dataProvider.items[index]['ContactNo']),
+            );
+          },itemCount: dataProvider.items.length,)
+    );
+  }
+}

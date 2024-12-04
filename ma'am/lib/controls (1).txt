@@ -1,0 +1,108 @@
+import 'package:flutter/material.dart';
+
+class Controls extends StatefulWidget {
+  const Controls({super.key});
+
+  @override
+  State<Controls> createState() => _ControlsState();
+}
+
+class _ControlsState extends State<Controls> {
+  int? result=0, num1=0, num2=0;
+  TextEditingController txtNum1 = new TextEditingController();
+  TextEditingController txtNum2 = new TextEditingController();
+  add(){
+    setState(() {
+      num1 = int.parse(txtNum1.text);
+      num2 = int.parse(txtNum2.text);
+
+      result = num1! + num2! ;
+    });
+
+
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title:Text('Controls Demo')
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(20),
+        child: Column(
+          children: [
+            Text('The sum is : $result',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.purple
+            ),),
+            SizedBox(
+              height: 20,
+            ),
+            TextField(
+              controller: txtNum1,
+              decoration: InputDecoration(
+                labelText: 'Enter Num1',
+                hintText: 'Enter Number 1',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20)
+                )
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            TextField(
+              controller: txtNum2,
+              decoration: InputDecoration(
+                labelText: 'Enter Num2',
+                hintText: 'Enter Number 2',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20)
+                )
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(onPressed: (){
+              add();
+            },
+                child: Text('Add',
+                style: TextStyle(
+                  color: Colors.white
+                ),),
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.indigo)
+            ),),
+            SizedBox(
+              height: 20,
+            ),
+            Text.rich(TextSpan(
+              children: [
+                TextSpan(
+                  text: 'Click Here to',
+                  style: TextStyle(
+                    fontStyle: FontStyle.italic
+                  ),
+                ),
+                TextSpan(
+                  text: ' Register',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.underline
+                  )
+
+                )
+              ]
+            )),
+            Icon(Icons.add_chart_outlined,
+            size: 60,
+            color: Colors.green,)
+          ],
+        ),
+      ),
+    );
+  }
+}
